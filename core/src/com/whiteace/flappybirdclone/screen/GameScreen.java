@@ -1,25 +1,38 @@
-package com.whiteace.flappybirdclone;
+package com.whiteace.flappybirdclone.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.whiteace.flappybirdclone.gameworld.GameRenderer;
 import com.whiteace.flappybirdclone.gameworld.GameWorld;
+import com.whiteace.flappybirdclone.zbhelper.InputHandler;
 
 public class GameScreen implements Screen{
 	
 	private GameWorld world;
 	private GameRenderer renderer;
+	private float runTime = 0;
 
 	public GameScreen(){
 		Gdx.app.log("GameScreen","Object Created");
-		world = new GameWorld(); 			// initialize world
-		renderer = new GameRenderer(world); 		// initialize renderer
+		
+
+        float screenWidth = Gdx.graphics.getWidth();
+        float screenHeight = Gdx.graphics.getHeight();
+        float gameWidth = 136;
+        float gameHeight = screenHeight / (screenWidth / gameWidth);
+
+        int midPointY = (int) (gameHeight / 2);
+		
+		world = new GameWorld(midPointY); 			// initialize world
+		renderer = new GameRenderer(world,(int) gameHeight,midPointY); 		// initialize renderer
+		Gdx.input.setInputProcessor(new InputHandler(world));
 	}
 	
 	@Override
 	public void render(float delta) {
+		runTime += delta;
 		world.update(delta);
-		renderer.render();
+		renderer.render(runTime);
 	}
 
 	@Override
